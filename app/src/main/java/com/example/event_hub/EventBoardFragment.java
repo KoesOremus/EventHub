@@ -27,8 +27,8 @@ public class EventBoardFragment extends Fragment {
 
         // Sample data for events
         List<Event> eventList = new ArrayList<>();
-        eventList.add(new Event("Taylor Swift: The Eras Tour", "Boston, MA", R.drawable.event_taylor));
-        eventList.add(new Event("Squid Game Live", "New York, NY", R.drawable.event_squid));
+        eventList.add(new Event("Taylor Swift: The Eras Tour", "Prospera Place, Kelowna", R.drawable.event_taylor));
+        eventList.add(new Event("Squid Game Live", "Kelowna Community Theatre", R.drawable.event_squid));
         // Add more events as needed
 
         eventAdapter = new EventAdapter(eventList, event -> {
