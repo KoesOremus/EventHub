@@ -48,6 +48,16 @@ public class MainActivity extends AppCompatActivity {
         loadFragment(new EventBoardFragment());
     }
 
+    @Override
+    public void onBackPressed() {
+        int backStackEntryCount = getSupportFragmentManager().getBackStackEntryCount();
+        if (backStackEntryCount > 0) {
+            getSupportFragmentManager().popBackStack();
+        } else {
+            super.onBackPressed();
+        }
+    }
+
     private void loadFragment(Fragment fragment) {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment_container, fragment);
