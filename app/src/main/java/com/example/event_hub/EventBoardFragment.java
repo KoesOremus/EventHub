@@ -27,11 +27,11 @@ public class EventBoardFragment extends Fragment {
 
         // Sample data for events
         List<Event> eventList = new ArrayList<>();
-        eventList.add(new Event("Taylor Swift: The Eras Tour", "Prospera Place, Kelowna", R.drawable.event_taylor));
-        eventList.add(new Event("Squid Game Live", "Kelowna Community Theatre", R.drawable.event_squid));
-        eventList.add(new Event("AI Tech Expo 2025", "Innovation Centre", R.drawable.event_placeholder));
-        eventList.add(new Event("Jazz Night", "Kelowna Jazz Club", R.drawable.event_placeholder));
-        eventList.add(new Event("Food Truck Festival", "Waterfront Park", R.drawable.event_placeholder));
+        eventList.add(new Event("Taylor Swift: The Eras Tour", "Prospera Place, Kelowna", R.drawable.event_taylor,"hi"));
+        eventList.add(new Event("Squid Game Live", "Kelowna Community Theatre", R.drawable.event_squid,"hi"));
+        eventList.add(new Event("AI Tech Expo 2025", "Innovation Centre", R.drawable.event_placeholder,"hi"));
+        eventList.add(new Event("Jazz Night", "Kelowna Jazz Club", R.drawable.event_placeholder,"hi"));
+        eventList.add(new Event("Food Truck Festival", "Waterfront Park", R.drawable.event_placeholder,"hi"));
 
 
         // Add more events as needed
@@ -43,6 +43,7 @@ public class EventBoardFragment extends Fragment {
             bundle.putString("event_title", event.getTitle());
             bundle.putString("event_location", event.getLocation());
             bundle.putInt("event_image", event.getImageResource());
+            bundle.putString("event_description", event.getDescription());
             eventDetailsFragment.setArguments(bundle);
 
             getParentFragmentManager().beginTransaction()

@@ -47,10 +47,10 @@ public class CommunityBoardFragment extends Fragment {
 
     private List<Event> getCommunityEvents() {
         List<Event> eventList = new ArrayList<>();
-        eventList.add(new Event("Local Art Exhibition", "Community Center", R.drawable.event_placeholder));
-        eventList.add(new Event("Farmers Market", "Downtown Plaza", R.drawable.event_placeholder));
-        eventList.add(new Event("Charity Run", "City Park", R.drawable.event_placeholder));
-        eventList.add(new Event("Book Club Meeting", "Public Library", R.drawable.event_placeholder));
+        eventList.add(new Event("Local Art Exhibition", "Community Center", R.drawable.event_placeholder,"hi"));
+        eventList.add(new Event("Farmers Market", "Downtown Plaza", R.drawable.event_placeholder,"hi"));
+        eventList.add(new Event("Charity Run", "City Park", R.drawable.event_placeholder,"hi"));
+        eventList.add(new Event("Book Club Meeting", "Public Library", R.drawable.event_placeholder,"hi"));
         return eventList;
     }
 

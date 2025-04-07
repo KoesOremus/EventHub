@@ -1,5 +1,6 @@
 package com.example.event_hub;
 
+import androidx.fragment.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,7 +10,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
+
+
+
 
 public class EventDetailsFragment extends Fragment {
 
@@ -24,14 +27,17 @@ public class EventDetailsFragment extends Fragment {
             String title = args.getString("event_title", "");
             String location = args.getString("event_location", "");
             int imageResource = args.getInt("event_image", R.drawable.event_placeholder);
+            String description = args.getString("event_description", "Default event description"); // ✅ Get description
 
             // Set event details
             TextView titleTextView = view.findViewById(R.id.text_event_title);
             TextView locationTextView = view.findViewById(R.id.text_event_location);
+            TextView descriptionTextView = view.findViewById(R.id.text_event_description); // ✅ Find description view
             ImageView imageView = view.findViewById(R.id.image_event);
 
             titleTextView.setText(title);
             locationTextView.setText(location);
+            descriptionTextView.setText(description); // ✅ Set it
             imageView.setImageResource(imageResource);
         }
 
