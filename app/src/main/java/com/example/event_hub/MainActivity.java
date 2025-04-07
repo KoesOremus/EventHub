@@ -1,15 +1,23 @@
 package com.example.event_hub;
 
 import android.os.Bundle;
+import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentTransaction;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity {
 
     private BottomNavigationView bottomNavigationView;
-
+    public static boolean navigateFromCheckout = false;
+    public static void navigateToCartFromDetails(FragmentActivity activity) {
+        navigateFromCheckout = true;
+        BottomNavigationView nav = activity.findViewById(R.id.bottom_navigation);
+        nav.setSelectedItemId(R.id.nav_tickets);
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,7 +42,18 @@ public class MainActivity extends AppCompatActivity {
                 selectedFragment = new MapFragment();
             } else if (itemId == R.id.nav_tickets) {
                 // Task 3: Event Registration (ticket management)
-                selectedFragment = new TicketManagementFragment();
+                if (navigateFromCheckout) {
+                    navigateFromCheckout = false;
+                    selectedFragment = new TicketManagementFragment();
+                    selectedFragment.setArguments(CartManager.buildBundleFromEvent());
+                } else if (CartManager.getSelectedEvent() == null) {
+                    Toast.makeText(this, "Your cart is empty", Toast.LENGTH_SHORT).show();
+                    return false;
+                } else {
+                    selectedFragment = new TicketManagementFragment();
+                    selectedFragment.setArguments(CartManager.buildBundleFromEvent());
+                }
+
             } else if (itemId == R.id.nav_profile) {
                 // Access to Tasks 4-5 through profile settings
                 selectedFragment = new ProfileFragment();

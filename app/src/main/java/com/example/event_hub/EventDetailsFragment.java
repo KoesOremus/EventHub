@@ -1,6 +1,5 @@
 package com.example.event_hub;
 
-import androidx.fragment.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,53 +7,67 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 
-
-
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class EventDetailsFragment extends Fragment {
 
+    private ImageView imageHeader;
+    private TextView titleText, descriptionText, dateText, locationText, priceText;
+
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_event_details, container, false);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_event_details, container, false);
+    }
 
-        // Get arguments
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        // find UI elements
+        imageHeader = view.findViewById(R.id.headerKhushi);
+        titleText = view.findViewById(R.id.titleKhushi);
+        descriptionText = view.findViewById(R.id.descriptionsKhushi);
+        dateText = view.findViewById(R.id.textDateKhushi);
+        locationText = view.findViewById(R.id.textLocationKhushi);
+        priceText = view.findViewById(R.id.textTicketKhushi);
+
+        // get event data from previous fragment
         Bundle args = getArguments();
         if (args != null) {
-            String title = args.getString("event_title", "");
-            String location = args.getString("event_location", "");
-            int imageResource = args.getInt("event_image", R.drawable.event_placeholder);
-            String description = args.getString("event_description", "Default event description"); // ✅ Get description
-
-            // Set event details
-            TextView titleTextView = view.findViewById(R.id.text_event_title);
-            TextView locationTextView = view.findViewById(R.id.text_event_location);
-            TextView descriptionTextView = view.findViewById(R.id.text_event_description); // ✅ Find description view
-            ImageView imageView = view.findViewById(R.id.image_event);
-
-            titleTextView.setText(title);
-            locationTextView.setText(location);
-            descriptionTextView.setText(description); // ✅ Set it
-            imageView.setImageResource(imageResource);
+            imageHeader.setImageResource(args.getInt("headerResId"));
+            titleText.setText(args.getString("title"));
+            descriptionText.setText(args.getString("description"));
+            dateText.setText(" " + args.getString("date"));
+            locationText.setText(" " + args.getString("location"));
+            priceText.setText(" Price: $" + String.format("%.2f", args.getDouble("price")));
         }
 
-        // Handle buy ticket button click
-        Button buyTicketButton = view.findViewById(R.id.button_buy_ticket);
-        buyTicketButton.setOnClickListener(v -> {
-            TicketPurchaseFragment ticketPurchaseFragment = new TicketPurchaseFragment();
-            if (args != null) {
-                ticketPurchaseFragment.setArguments(args);
-            }
+        // handle checkout button click
+        Button checkoutBtn = view.findViewById(R.id.descriptionsButtonKhushi);
+        checkoutBtn.setOnClickListener(v -> {
+            // create and save selected event
+            Event selectedEvent = new Event(
+                    args.getInt("imageResId"),
+                    args.getInt("headerResId"),
+                    args.getString("title"),
+                    args.getString("description"),
+                    args.getString("date"),
+                    args.getString("location"),
+                    args.getDouble("price")
+            );
 
-            getParentFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, ticketPurchaseFragment)
-                    .addToBackStack(null)
-                    .commit();
+            CartManager.setSelectedEvent(selectedEvent);
+            CartManager.setCartEmpty(false);
+
+            // go to ticket page using method from main activity
+            MainActivity.navigateToCartFromDetails(requireActivity());
         });
-
-        return view;
     }
 }
