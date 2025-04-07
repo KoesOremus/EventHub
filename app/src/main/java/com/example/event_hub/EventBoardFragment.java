@@ -4,12 +4,13 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import java.util.ArrayList;
+
 import java.util.List;
 
 public class EventBoardFragment extends Fragment {
@@ -25,19 +26,34 @@ public class EventBoardFragment extends Fragment {
         recyclerView = view.findViewById(R.id.recycler_view_events);
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
 
-        // Sample data for events
-        List<Event> eventList = new ArrayList<>();
-        eventList.add(new Event("Taylor Swift: The Eras Tour", "Prospera Place, Kelowna", R.drawable.event_taylor));
-        eventList.add(new Event("Squid Game Live", "Kelowna Community Theatre", R.drawable.event_squid));
-        // Add more events as needed
+        // Load full event list from repository
+        List<Event> fullEventList = EventRepository.getEvents();
 
-        eventAdapter = new EventAdapter(eventList, event -> {
-            // Navigate to event details
-            EventDetailsFragment eventDetailsFragment = new EventDetailsFragment();
+        // Initialize adapter with click listener
+        eventAdapter = new EventAdapter(fullEventList, event -> {
+            // Find the full event from repository based on title
+            Event fullEvent = null;
+            for (Event e : EventRepository.getEvents()) {
+                if (e.getTitle().equals(event.getTitle())) {
+                    fullEvent = e;
+                    break;
+                }
+            }
+
+            if (fullEvent == null) return; // safety check
+
+            // Prepare bundle with correct keys
             Bundle bundle = new Bundle();
-            bundle.putString("event_title", event.getTitle());
-            bundle.putString("event_location", event.getLocation());
-            bundle.putInt("event_image", event.getImageResource());
+            bundle.putInt("imageResId", fullEvent.getImageResource());
+            bundle.putInt("headerResId", fullEvent.getHeaderResId());
+            bundle.putString("title", fullEvent.getTitle());
+            bundle.putString("description", fullEvent.getDescription());
+            bundle.putString("date", fullEvent.getDate());
+            bundle.putString("location", fullEvent.getLocation());
+            bundle.putDouble("price", fullEvent.getPrice());
+
+            // Pass to EventDetailsFragment
+            EventDetailsFragment eventDetailsFragment = new EventDetailsFragment();
             eventDetailsFragment.setArguments(bundle);
 
             getParentFragmentManager().beginTransaction()
