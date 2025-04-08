@@ -34,7 +34,7 @@ public class EventBoardFragment extends Fragment {
 
 
 
-        List<Event> fullEventList = EventRepository.getEvents();
+
 
         // Load full event list from repository
         fullEventList = EventRepository.getEvents();
