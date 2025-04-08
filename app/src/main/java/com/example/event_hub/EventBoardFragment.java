@@ -42,7 +42,7 @@ public class EventBoardFragment extends Fragment {
 
             if (fullEvent == null) return; // safety check
 
-            // Prepare bundle with correct keys
+            // prepare bundle with correct keys
             Bundle bundle = new Bundle();
             bundle.putInt("imageResId", fullEvent.getImageResource());
             bundle.putInt("headerResId", fullEvent.getHeaderResId());
