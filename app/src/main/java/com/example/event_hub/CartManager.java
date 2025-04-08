@@ -6,6 +6,8 @@ public class CartManager {
 
     // checks if cart has anything or not
     private static boolean isCartEmpty = true;
+    private static double totalAmount;
+    private static int number;
 
     // stores the selected event
     private static Event selectedEvent;
@@ -48,6 +50,22 @@ public class CartManager {
     // used to go back to the same index when needed
     public static int getSelectedEventIndex() {
         return selectedEventIndex;
+    }
+
+    public static void setTotal(double total) {
+        totalAmount = total;
+    }
+
+    public static double getTotal() {
+        return totalAmount;
+    }
+
+    public static void setNumber(int totalNumber) {
+        number = totalNumber;
+    }
+
+    public static int getNumber() {
+        return number;
     }
 
     // makes a bundle with all event info (to pass across screens)

@@ -80,10 +80,11 @@ public class PaymentFragment extends Fragment {
 
     private void updateEventDetails() {
         if (selectedEvent != null) {
+            int number = CartManager.getNumber();
             eventNameTextView.setText(String.format("%s - %d ticket(s)",
-                    selectedEvent.getTitle(), ticketQuantity));
+                    selectedEvent.getTitle(), number));
 
-            double totalPrice = selectedEvent.getPrice() * ticketQuantity;
+            double totalPrice = CartManager.getTotal();
             totalPriceTextView.setText(String.format("Total: $%.2f", totalPrice));
         }
     }
@@ -171,7 +172,7 @@ public class PaymentFragment extends Fragment {
         ticket.setEventName(selectedEvent.getTitle());
         ticket.setQuantity(ticketQuantity);
 
-        double totalPrice = selectedEvent.getPrice() * ticketQuantity;
+        double totalPrice = CartManager.getTotal();
         ticket.setPrice(totalPrice);
 
         ticket.setCustomerName(cardNameEditText.getText().toString());
