@@ -142,6 +142,9 @@ public class TicketManagementFragment extends Fragment {
         double subtotal = ticketPrice * ticketCount;
         double tax = subtotal * 0.12;
         double total = subtotal + tax;
+        CartManager.setTotal(total);
+        CartManager.setNumber(ticketCount);
+
 
         subtotalText.setText(String.format("$%.2f", subtotal));
         taxText.setText(String.format("$%.2f", tax));

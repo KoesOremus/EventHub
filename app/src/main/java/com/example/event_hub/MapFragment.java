@@ -7,6 +7,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SearchView;
+import android.view.inputmethod.InputMethodManager;
+import android.content.Context;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -29,7 +31,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private MapView mapView;
     private GoogleMap googleMap;
     private SearchView searchView;
-    private String autoSearchLocation = null; // location passed from event details
+    private String autoSearchLocation = null;
 
     @Nullable
     @Override
@@ -40,7 +42,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         mapView = view.findViewById(R.id.mapView);
         searchView = view.findViewById(R.id.searchView);
 
-        // receive location name if passed
+        // get location passed from event details
         Bundle args = getArguments();
         if (args != null) {
             autoSearchLocation = args.getString("location_name", null);
@@ -57,11 +59,22 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         googleMap = map;
         MapsInitializer.initialize(requireContext());
 
-        // handle manual search
+        // expand the search bar and disable auto keyboard
+        searchView.setIconified(false);
+        searchView.clearFocus();
+
+        // disable keyboard from popping
+        InputMethodManager imm = (InputMethodManager) requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (imm != null) {
+            imm.hideSoftInputFromWindow(searchView.getWindowToken(), 0);
+        }
+
+        // manual search input
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 locateAndMark(query);
+                searchView.clearFocus();
                 return true;
             }
 
@@ -71,15 +84,16 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             }
         });
 
-        // if location was passed from event details, search and mark it
+        // auto input and search from event page
         if (autoSearchLocation != null && !autoSearchLocation.isEmpty()) {
-            searchView.setQuery(autoSearchLocation, false);
-            searchView.clearFocus();
-            mapView.postDelayed(() -> locateAndMark(autoSearchLocation), 300);
+            // delay to ensure SearchView and MapView are both fully ready
+            mapView.postDelayed(() -> {
+                searchView.setQuery(autoSearchLocation, true); // true = auto-submit
+            }, 500);
         }
     }
 
-    // helper to find location and drop marker
+    // helper method to mark a location
     private void locateAndMark(String locationName) {
         Geocoder geocoder = new Geocoder(getContext(), Locale.getDefault());
         try {
@@ -96,7 +110,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         }
     }
 
-    // mapView lifecycle
+    // map lifecycle
     @Override public void onResume() { super.onResume(); mapView.onResume(); }
     @Override public void onPause() { super.onPause(); mapView.onPause(); }
     @Override public void onDestroy() { super.onDestroy(); mapView.onDestroy(); }
