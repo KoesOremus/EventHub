@@ -49,6 +49,41 @@ public class EventRepository {
                 9.99
         ));
 
+        events.add(new Event(
+                R.drawable.poster_musicfestival,
+                R.drawable.header_musicfestival,
+                "Summer Beats Music Festival",
+                "Join us for a day-long celebration of music featuring top artists from around the globe.\n" +
+                        "Multiple stages, food trucks, and activities for all ages.",
+                "20-06-2025",
+                "Central Park, Kelowna",
+                49.99
+        ));
+
+        // Event 5 - Art Exhibition
+        events.add(new Event(
+                R.drawable.poster_artexhibition,
+                R.drawable.header_artexhibition,
+                "Modern Art Exhibition",
+                "Explore contemporary artworks from emerging and established artists.\n" +
+                        "Interactive installations and guided tours available.",
+                "10-07-2025",
+                "Kelowna Art Gallery",
+                15.00
+        ));
+
+        // Event 6 - Food Truck Festival
+        events.add(new Event(
+                R.drawable.poster_foodtruck,
+                R.drawable.header_foodtruck,
+                "Food Truck Fiesta",
+                "Savor a variety of cuisines from the best food trucks in the region.\n" +
+                        "Live music and family-friendly activities throughout the day.",
+                "15-08-2025",
+                "Waterfront Park, Kelowna",
+                5.00
+        ));
+
         // return the full list of events
         return events;
     }

@@ -61,4 +61,9 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
             itemView.setOnClickListener(v -> listener.onEventClick(event));
         }
     }
+    public void updateList(List<Event> newList) {
+        eventList = newList;
+        notifyDataSetChanged();
+    }
+
 }
