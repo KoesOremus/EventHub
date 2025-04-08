@@ -69,6 +69,12 @@ public class MainActivity extends AppCompatActivity {
 
         // Load default fragment - Community Announcement Board
         loadFragment(new EventBoardFragment());
+        if (savedInstanceState == null) {
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, new EventBoardFragment())
+                    .commit();
+        }
+
     }
 
     private void loadFragment(Fragment fragment) {
