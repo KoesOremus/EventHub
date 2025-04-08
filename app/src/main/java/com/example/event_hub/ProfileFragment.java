@@ -19,38 +19,32 @@ public class ProfileFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
 
-        // Initialize UI elements
         TextView editProfileOption = view.findViewById(R.id.text_edit_profile);
         TextView changePasswordOption = view.findViewById(R.id.text_change_password);
-        TextView paymentMethodsOption = view.findViewById(R.id.text_payment_methods);
+
         TextView notificationsOption = view.findViewById(R.id.text_notifications);
         TextView languageOption = view.findViewById(R.id.text_language);
         TextView themeOption = view.findViewById(R.id.text_theme);
         Button logoutButton = view.findViewById(R.id.button_logout);
 
-        // Set click listeners for each option
+
         editProfileOption.setOnClickListener(v -> {
             Toast.makeText(getContext(), "Edit Profile selected", Toast.LENGTH_SHORT).show();
-            // Navigation to profile editing screen would go here
+
         });
 
         changePasswordOption.setOnClickListener(v -> {
             Toast.makeText(getContext(), "Change Password selected", Toast.LENGTH_SHORT).show();
-            // Navigation to password change screen would go here
+
         });
 
-        // Task 4: Integration of Digital Wallets/Payment System
-        paymentMethodsOption.setOnClickListener(v -> {
-            Toast.makeText(getContext(), "Payment Methods selected", Toast.LENGTH_SHORT).show();
-            navigateToPaymentSystem();
-        });
 
         notificationsOption.setOnClickListener(v -> {
             Toast.makeText(getContext(), "Notifications selected", Toast.LENGTH_SHORT).show();
-            // Navigation to notifications settings would go here
+
         });
 
-        // Additional options for language and theme
+
         languageOption.setOnClickListener(v -> {
             showLanguageSelectionDialog();
         });
@@ -64,7 +58,7 @@ public class ProfileFragment extends Fragment {
             performLogout();
         });
 
-        // Add a feedback/ratings button to access Task 5
+
         TextView feedbackOption = view.findViewById(R.id.text_feedback);
         if (feedbackOption != null) {
             feedbackOption.setOnClickListener(v -> {
@@ -76,7 +70,7 @@ public class ProfileFragment extends Fragment {
     }
 
     private void navigateToPaymentSystem() {
-        // Task 4: Integration of Digital Wallets/Payment System
+
         PaymentSystemFragment paymentSystemFragment = new PaymentSystemFragment();
         getParentFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container, paymentSystemFragment)
@@ -85,7 +79,7 @@ public class ProfileFragment extends Fragment {
     }
 
     private void navigateToFeedbackSystem() {
-        // Task 5: Feedback system (post event ratings)
+
         FeedbackListFragment feedbackListFragment = new FeedbackListFragment();
         getParentFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container, feedbackListFragment)
@@ -120,9 +114,7 @@ public class ProfileFragment extends Fragment {
     }
 
     private void performLogout() {
-        // In a real app, clear user session data, tokens, etc.
 
-        // Navigate back to the community board
         getParentFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container, new EventBoardFragment())
                 .commit();
