@@ -64,7 +64,7 @@ public class Event implements Parcelable {
         return price;
     }
 
-    // Parcelable implementation
+
     protected Event(Parcel in) {
         posterResourceId = in.readInt();
         headerResourceId = in.readInt();
