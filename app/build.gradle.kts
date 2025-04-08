@@ -14,6 +14,13 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        resValue("string", "MAPS_API_KEY", "\"${project.properties["MAPS_API_KEY"]}\"")
+
+    }
+
+    buildFeatures {
+        buildConfig = true
     }
 
     buildTypes {
