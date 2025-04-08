@@ -32,12 +32,17 @@ public class EventBoardFragment extends Fragment {
         recyclerView = view.findViewById(R.id.recycler_view_events);
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
 
+
+
+        List<Event> fullEventList = EventRepository.getEvents();
+
         // Load full event list from repository
         fullEventList = EventRepository.getEvents();
 
-        // Initialize adapter with click listener
+
+
         eventAdapter = new EventAdapter(fullEventList, event -> {
-            // Find the full event from repository based on title
+
             Event fullEvent = null;
             for (Event e : EventRepository.getEvents()) {
                 if (e.getTitle().equals(event.getTitle())) {
@@ -48,7 +53,6 @@ public class EventBoardFragment extends Fragment {
 
             if (fullEvent == null) return;
 
-            // Prepare bundle with correct keys
             Bundle bundle = new Bundle();
             bundle.putInt("imageResId", fullEvent.getImageResource());
             bundle.putInt("headerResId", fullEvent.getHeaderResId());
@@ -58,7 +62,7 @@ public class EventBoardFragment extends Fragment {
             bundle.putString("location", fullEvent.getLocation());
             bundle.putDouble("price", fullEvent.getPrice());
 
-            // Pass to EventDetailsFragment
+
             EventDetailsFragment eventDetailsFragment = new EventDetailsFragment();
             eventDetailsFragment.setArguments(bundle);
 
