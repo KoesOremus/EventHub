@@ -25,7 +25,7 @@ public class AddAnnouncementFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_add_announcement, container, false);
 
-        // Initialize form fields
+
         editEventName = view.findViewById(R.id.edit_event_name);
         editEventLocation = view.findViewById(R.id.edit_event_location);
         editEventDate = view.findViewById(R.id.edit_event_date);

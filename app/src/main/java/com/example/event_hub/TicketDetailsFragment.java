@@ -16,7 +16,7 @@ public class TicketDetailsFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_ticket_details, container, false);
 
-        // Handle back button click
+
         Button backButton = view.findViewById(R.id.button_back);
         backButton.setOnClickListener(v -> {
             getParentFragmentManager().popBackStack();
