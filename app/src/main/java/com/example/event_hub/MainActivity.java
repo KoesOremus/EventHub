@@ -23,25 +23,25 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Initialize bottom navigation
+        // initialize bottom navigation
         bottomNavigationView = findViewById(R.id.bottom_navigation);
 
-        // Set up navigation item selection listener
+        // set up navigation item selection listener
         bottomNavigationView.setOnItemSelectedListener(item -> {
             Fragment selectedFragment = null;
             int itemId = item.getItemId();
 
             if (itemId == R.id.nav_home) {
-                // Task 1: Free Community announcement board for events
+
                 selectedFragment = new EventBoardFragment();
             } else if (itemId == R.id.nav_events) {
-                // Task 2: Comprehensive event listings with integrated maps
+
                 selectedFragment = new EventListingsFragment();
             } else if (itemId == R.id.nav_maps) {
-                // Task 2 (continued): Maps integration
+
                 selectedFragment = new MapFragment();
             } else if (itemId == R.id.nav_tickets) {
-                // Task 3: Event Registration (ticket management)
+
                 if (navigateFromCheckout) {
                     navigateFromCheckout = false;
                     selectedFragment = new TicketManagementFragment();
@@ -54,9 +54,6 @@ public class MainActivity extends AppCompatActivity {
                     selectedFragment.setArguments(CartManager.buildBundleFromEvent());
                 }
 
-            } else if (itemId == R.id.nav_profile) {
-                // Access to Tasks 4-5 through profile settings
-                selectedFragment = new ProfileFragment();
             }
 
             if (selectedFragment != null) {
@@ -67,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
             return false;
         });
 
-        // Load default fragment - Community Announcement Board
+        // load default fragment - Community Announcement Board
         loadFragment(new EventBoardFragment());
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
