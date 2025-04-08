@@ -30,11 +30,9 @@ public class PaymentFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
         if (getArguments() != null) {
             selectedEvent = getArguments().getParcelable("selected_event");
         }
-
 
         if (selectedEvent == null) {
             selectedEvent = CartManager.getSelectedEvent();
@@ -46,7 +44,6 @@ public class PaymentFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_payment, container, false);
 
-
         cardNumberEditText = view.findViewById(R.id.edit_card_number);
         cardNameEditText = view.findViewById(R.id.edit_card_name);
         expiryEditText = view.findViewById(R.id.edit_expiry);
@@ -54,22 +51,26 @@ public class PaymentFragment extends Fragment {
         addressEditText = view.findViewById(R.id.edit_address);
         cityEditText = view.findViewById(R.id.edit_city);
 
+        // set input type to allow only numbers for card number and CVV
+        cardNumberEditText.setInputType(android.text.InputType.TYPE_CLASS_NUMBER);
+        cvvEditText.setInputType(android.text.InputType.TYPE_CLASS_NUMBER);
+
+        // add text watchers to ensure only numbers are entered
+        cardNumberEditText.addTextChangedListener(new NumericTextWatcher(cardNumberEditText));
+        cvvEditText.addTextChangedListener(new NumericTextWatcher(cvvEditText));
 
         eventNameTextView = view.findViewById(R.id.text_event_name);
         totalPriceTextView = view.findViewById(R.id.text_total);
 
-
         if (selectedEvent != null) {
             updateEventDetails();
         } else {
-
             Toast.makeText(getContext(), "No event selected", Toast.LENGTH_SHORT).show();
 
             if (getParentFragmentManager().getBackStackEntryCount() > 0) {
                 getParentFragmentManager().popBackStack();
             }
         }
-
 
         Button payButton = view.findViewById(R.id.button_pay_now);
         payButton.setOnClickListener(v -> processPayment());
@@ -79,10 +80,8 @@ public class PaymentFragment extends Fragment {
 
     private void updateEventDetails() {
         if (selectedEvent != null) {
-
             eventNameTextView.setText(String.format("%s - %d ticket(s)",
                     selectedEvent.getTitle(), ticketQuantity));
-
 
             double totalPrice = selectedEvent.getPrice() * ticketQuantity;
             totalPriceTextView.setText(String.format("Total: $%.2f", totalPrice));
@@ -90,19 +89,15 @@ public class PaymentFragment extends Fragment {
     }
 
     private void processPayment() {
-
         if (selectedEvent == null) {
             Toast.makeText(getContext(), "No event selected", Toast.LENGTH_SHORT).show();
             return;
         }
 
         if (validatePaymentDetails()) {
-
             Ticket ticket = generateTicket();
 
-
             FeedbackFragment feedbackFragment = new FeedbackFragment();
-
 
             Bundle args = new Bundle();
             args.putParcelable("ticket", ticket);
@@ -116,9 +111,14 @@ public class PaymentFragment extends Fragment {
     }
 
     private boolean validatePaymentDetails() {
-
         if (cardNumberEditText.getText().toString().trim().isEmpty()) {
             cardNumberEditText.setError("Card number is required");
+            return false;
+        }
+
+        String cardNumber = cardNumberEditText.getText().toString().trim();
+        if (!cardNumber.matches("^[0-9]{13,19}$")) {
+            cardNumberEditText.setError("Please enter a valid card number (13-19 digits)");
             return false;
         }
 
@@ -132,8 +132,20 @@ public class PaymentFragment extends Fragment {
             return false;
         }
 
+        String expiry = expiryEditText.getText().toString().trim();
+        if (!expiry.matches("^(0[1-9]|1[0-2])/[0-9]{2}$")) {
+            expiryEditText.setError("Please enter expiry in MM/YY format");
+            return false;
+        }
+
         if (cvvEditText.getText().toString().trim().isEmpty()) {
             cvvEditText.setError("CVV is required");
+            return false;
+        }
+
+        String cvv = cvvEditText.getText().toString().trim();
+        if (!cvv.matches("^[0-9]{3,4}$")) {
+            cvvEditText.setError("Please enter a valid 3-4 digit CVV");
             return false;
         }
 
@@ -151,16 +163,13 @@ public class PaymentFragment extends Fragment {
     }
 
     private Ticket generateTicket() {
-
         if (selectedEvent == null) {
             throw new IllegalStateException("No event selected");
         }
 
-
         Ticket ticket = new Ticket();
         ticket.setEventName(selectedEvent.getTitle());
         ticket.setQuantity(ticketQuantity);
-
 
         double totalPrice = selectedEvent.getPrice() * ticketQuantity;
         ticket.setPrice(totalPrice);

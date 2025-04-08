@@ -32,17 +32,10 @@ public class EventBoardFragment extends Fragment {
         recyclerView = view.findViewById(R.id.recycler_view_events);
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
 
-
-
-
-
         // Load full event list from repository
         fullEventList = EventRepository.getEvents();
 
-
-
         eventAdapter = new EventAdapter(fullEventList, event -> {
-
             Event fullEvent = null;
             for (Event e : EventRepository.getEvents()) {
                 if (e.getTitle().equals(event.getTitle())) {
@@ -62,7 +55,6 @@ public class EventBoardFragment extends Fragment {
             bundle.putString("location", fullEvent.getLocation());
             bundle.putDouble("price", fullEvent.getPrice());
 
-
             EventDetailsFragment eventDetailsFragment = new EventDetailsFragment();
             eventDetailsFragment.setArguments(bundle);
 
@@ -74,7 +66,7 @@ public class EventBoardFragment extends Fragment {
 
         recyclerView.setAdapter(eventAdapter);
 
-        // Setup search filter
+        // setup search filter
         searchBar.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
