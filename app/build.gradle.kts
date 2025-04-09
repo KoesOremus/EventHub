@@ -15,8 +15,8 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        resValue("string", "MAPS_API_KEY", "\"${project.properties["MAPS_API_KEY"]}\"")
-
+        val mapsApiKey: String = project.findProperty("MAPS_API_KEY") as? String ?: ""
+        manifestPlaceholders["mapsApiKey"] = mapsApiKey
     }
 
     buildFeatures {

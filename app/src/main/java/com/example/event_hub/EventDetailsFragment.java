@@ -11,6 +11,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -72,19 +73,11 @@ public class EventDetailsFragment extends Fragment {
         locationText.setOnClickListener(v -> {
             String eventLocation = args.getString("location");
 
-            // create map fragment and send location in bundle
-            MapFragment mapFragment = new MapFragment();
-            Bundle bundle = new Bundle();
-            bundle.putString("location_name", eventLocation);
-            mapFragment.setArguments(bundle);
+            // update ViewModel with new location
+            SharedLocationViewModel viewModel = new ViewModelProvider(requireActivity()).get(SharedLocationViewModel.class);
+            viewModel.setLocation(eventLocation);
 
-            // navigate to map fragment
-            requireActivity().getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, mapFragment)
-                    .addToBackStack(null)
-                    .commit();
-
-            // highlight third icon (map) in bottom nav
+            // switch to the maps tab
             BottomNavigationView bottomNav = requireActivity().findViewById(R.id.bottom_navigation);
             bottomNav.setSelectedItemId(R.id.nav_maps);
         });
