@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel;
 public class SharedLocationViewModel extends ViewModel {
     private final MutableLiveData<String> selectedLocation = new MutableLiveData<>();
 
+    //getters and setters for location
     public void setLocation(String location) {
         selectedLocation.setValue(location);
     }

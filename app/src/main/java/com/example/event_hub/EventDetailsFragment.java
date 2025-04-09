@@ -77,7 +77,7 @@ public class EventDetailsFragment extends Fragment {
             SharedLocationViewModel viewModel = new ViewModelProvider(requireActivity()).get(SharedLocationViewModel.class);
             viewModel.setLocation(eventLocation);
 
-            // switch to the Maps tab
+            // switch to the maps tab
             BottomNavigationView bottomNav = requireActivity().findViewById(R.id.bottom_navigation);
             bottomNav.setSelectedItemId(R.id.nav_maps);
         });
