@@ -7,48 +7,87 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+
 public class EventDetailsFragment extends Fragment {
+
+    private ImageView imageHeader;
+    private TextView titleText, descriptionText, dateText, locationText, priceText;
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_event_details, container, false);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_event_details, container, false);
+    }
 
-        // Get arguments
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        // find ui elements
+        imageHeader = view.findViewById(R.id.headerKhushi);
+        titleText = view.findViewById(R.id.titleKhushi);
+        descriptionText = view.findViewById(R.id.descriptionsKhushi);
+        dateText = view.findViewById(R.id.textDateKhushi);
+        locationText = view.findViewById(R.id.textLocationKhushi);
+        priceText = view.findViewById(R.id.textTicketKhushi);
+
+        // get event data from bundle
         Bundle args = getArguments();
         if (args != null) {
-            String title = args.getString("event_title", "");
-            String location = args.getString("event_location", "");
-            int imageResource = args.getInt("event_image", R.drawable.event_placeholder);
-
-            // Set event details
-            TextView titleTextView = view.findViewById(R.id.text_event_title);
-            TextView locationTextView = view.findViewById(R.id.text_event_location);
-            ImageView imageView = view.findViewById(R.id.image_event);
-
-            titleTextView.setText(title);
-            locationTextView.setText(location);
-            imageView.setImageResource(imageResource);
+            imageHeader.setImageResource(args.getInt("headerResId"));
+            titleText.setText(args.getString("title"));
+            descriptionText.setText(args.getString("description"));
+            dateText.setText(" " + args.getString("date"));
+            locationText.setText(" " + args.getString("location"));
+            priceText.setText(" Price: $" + String.format("%.2f", args.getDouble("price")));
         }
 
-        // Handle buy ticket button click
-        Button buyTicketButton = view.findViewById(R.id.button_buy_ticket);
-        buyTicketButton.setOnClickListener(v -> {
-            TicketPurchaseFragment ticketPurchaseFragment = new TicketPurchaseFragment();
-            if (args != null) {
-                ticketPurchaseFragment.setArguments(args);
-            }
+        // checkout button logic
+        Button checkoutBtn = view.findViewById(R.id.descriptionsButtonKhushi);
+        checkoutBtn.setOnClickListener(v -> {
+            Event selectedEvent = new Event(
+                    args.getInt("imageResId"),
+                    args.getInt("headerResId"),
+                    args.getString("title"),
+                    args.getString("description"),
+                    args.getString("date"),
+                    args.getString("location"),
+                    args.getDouble("price")
+            );
 
-            getParentFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, ticketPurchaseFragment)
-                    .addToBackStack(null)
-                    .commit();
+            CartManager.setSelectedEvent(selectedEvent);
+            CartManager.setCartEmpty(false);
+
+            MainActivity.navigateToCartFromDetails(requireActivity());
         });
 
-        return view;
+        // location click opens map with selected location
+        locationText.setOnClickListener(v -> {
+            String eventLocation = args.getString("location");
+
+            // create map fragment and send location in bundle
+            MapFragment mapFragment = new MapFragment();
+            Bundle bundle = new Bundle();
+            bundle.putString("location_name", eventLocation);
+            mapFragment.setArguments(bundle);
+
+            // navigate to map fragment
+            requireActivity().getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, mapFragment)
+                    .addToBackStack(null)
+                    .commit();
+
+            // highlight third icon (map) in bottom nav
+            BottomNavigationView bottomNav = requireActivity().findViewById(R.id.bottom_navigation);
+            bottomNav.setSelectedItemId(R.id.nav_maps);
+        });
+
     }
 }
