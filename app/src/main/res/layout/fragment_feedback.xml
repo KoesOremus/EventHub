@@ -33,10 +33,11 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1.0" />
+
     <TextView
         android:id="@+id/text_event_details"
-        android:layout_width="143dp"
-        android:layout_height="172dp"
+        android:layout_width="199dp"
+        android:layout_height="188dp"
         android:padding="16dp"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -132,8 +133,8 @@
 
     <ImageView
         android:id="@+id/feedbackImage"
-        android:layout_width="248dp"
-        android:layout_height="179dp"
+        android:layout_width="169dp"
+        android:layout_height="187dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_ticket_details"
         app:srcCompat="@drawable/event_squid" />
