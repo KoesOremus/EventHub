@@ -87,4 +87,12 @@ public class EventRepository {
         // return the full list of events
         return events;
     }
+    public static Event getEventByTitle(String title) {
+        for (Event event : getEvents()) {
+            if (event.getTitle().equalsIgnoreCase(title)) {
+                return event;
+            }
+        }
+        return null;
+    }
 }

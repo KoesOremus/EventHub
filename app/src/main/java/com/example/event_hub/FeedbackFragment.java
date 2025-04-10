@@ -4,10 +4,15 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 public class FeedbackFragment extends Fragment {
 
@@ -46,7 +51,26 @@ public class FeedbackFragment extends Fragment {
             );
 
             ticketDetailsTextView.setText(ticketDetails);
+
+        Event event = EventRepository.getEventByTitle(ticket.getEventName());
+        if (event != null) {
+            TextView eventFeedback = view.findViewById(R.id.text_event_details);
+            ImageView eventHeader = view.findViewById(R.id.feedbackImage);
+
+            eventFeedback.setText(event.getTitle()+"\n"+event.getDate()+"\n"+event.getLocation());
+            eventHeader.setImageResource(event.getImageResource());
+            }
         }
+        Button submitFeedback = view.findViewById(R.id.button_submit_feedback);
+        submitFeedback.setOnClickListener(v->{
+            Toast.makeText(getActivity(), "Feedback and checkout Confirmed", Toast.LENGTH_SHORT).show();
+
+            FragmentTransaction transaction = getFragmentManager().beginTransaction();
+            EventBoardFragment eventBoardFragment = new EventBoardFragment();
+            transaction.replace(R.id.fragment_container, eventBoardFragment);
+            transaction.addToBackStack(null);
+            transaction.commit();
+        });
 
         return view;
     }
