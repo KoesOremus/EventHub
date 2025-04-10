@@ -6,6 +6,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RadioGroup;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -62,14 +64,26 @@ public class FeedbackFragment extends Fragment {
             }
         }
         Button submitFeedback = view.findViewById(R.id.button_submit_feedback);
-        submitFeedback.setOnClickListener(v->{
-            Toast.makeText(getActivity(), "Feedback and checkout Confirmed", Toast.LENGTH_SHORT).show();
+        RadioGroup radioGroup = view.findViewById(R.id.radioGroup);
+        RatingBar ratingBar = view.findViewById(R.id.rating_bar);
 
-            FragmentTransaction transaction = getFragmentManager().beginTransaction();
-            EventBoardFragment eventBoardFragment = new EventBoardFragment();
-            transaction.replace(R.id.fragment_container, eventBoardFragment);
-            transaction.addToBackStack(null);
-            transaction.commit();
+        submitFeedback.setOnClickListener(v->{
+            int selectedId = radioGroup.getCheckedRadioButtonId();
+            float rating = ratingBar.getRating();
+            if(rating == 0.0f){
+                Toast.makeText(getActivity(), "Please set a rating for this event", Toast.LENGTH_SHORT).show();
+            }else if(selectedId==-1){
+                Toast.makeText(getActivity(), "Select a recommendation for this Event", Toast.LENGTH_SHORT).show();
+            }
+            else {
+
+                Toast.makeText(getActivity(), "Feedback and checkout Confirmed", Toast.LENGTH_SHORT).show();
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                EventBoardFragment eventBoardFragment = new EventBoardFragment();
+                transaction.replace(R.id.fragment_container, eventBoardFragment);
+                transaction.addToBackStack(null);
+                transaction.commit();
+            }
         });
 
         return view;
