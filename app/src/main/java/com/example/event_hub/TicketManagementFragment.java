@@ -13,25 +13,26 @@ import androidx.fragment.app.Fragment;
 
 public class TicketManagementFragment extends Fragment {
 
-    // ui elements
+    // ui elements on the screen
     private ImageView headerImage;
     private TextView titleText, ticketCountText, subtotalText, taxText, totalText;
     private LinearLayout attendeeContainer;
 
-    // variables to manage tickets
+    // variables to handle ticket logic
     private int ticketCount = 1;
     private double ticketPrice = 0.0;
     private Event selectedEvent;
 
+    // this runs when the screen is created
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
 
-        // loading the screen layout
+        // inflates the layout from xml file
         View view = inflater.inflate(R.layout.fragment_ticket_management, container, false);
 
-        // connecting ui elements with java
+        // connecting ui elements with variables
         headerImage = view.findViewById(R.id.headerKhushi2);
         titleText = view.findViewById(R.id.titleKhushi2);
         ticketCountText = view.findViewById(R.id.ticketCount);
@@ -40,36 +41,40 @@ public class TicketManagementFragment extends Fragment {
         totalText = view.findViewById(R.id.totalPriceKhushi);
         attendeeContainer = view.findViewById(R.id.attendeeContainer);
 
-        // plus and minus button for ticket count
+        // buttons for changing ticket count
         ImageView plusBtn = view.findViewById(R.id.plusBtn);
         ImageView minusBtn = view.findViewById(R.id.minusBtn);
 
-        // getting event details from cart
+        // get the selected event from the cart
         selectedEvent = CartManager.getSelectedEvent();
+        ticketCount = CartManager.getTicketCount(); // get saved ticket count
+
+        // if there is a selected event, show its info
         if (selectedEvent != null) {
             headerImage.setImageResource(selectedEvent.getHeaderResId());
             titleText.setText(selectedEvent.getTitle());
             ticketPrice = selectedEvent.getPrice();
         }
 
-        // show the first attendee input
-        addAttendeeBlock();
+        // restore saved number of attendee blocks
+        restoreAttendees();
 
-        // when plus is clicked add ticket and attendee input
+        // when plus is clicked, add one more ticket and attendee input
         plusBtn.setOnClickListener(v -> {
             ticketCount++;
+            CartManager.setTicketCount(ticketCount);
             ticketCountText.setText(String.valueOf(ticketCount));
             addAttendeeBlock();
             updatePrices();
         });
 
-        // when minus is clicked remove ticket or go back if only 1
+        // when minus is clicked, remove a ticket or go back to event page
         minusBtn.setOnClickListener(v -> {
             if (ticketCount == 1) {
                 CartManager.clear();
-                Toast.makeText(requireContext(), "your cart is now empty", Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireContext(), "Your cart is now empty", Toast.LENGTH_SHORT).show();
 
-                // go back to event details page
+                // go back to the event description page
                 if (selectedEvent != null) {
                     EventDetailsFragment detailsFragment = new EventDetailsFragment();
                     Bundle bundle = new Bundle();
@@ -89,19 +94,18 @@ public class TicketManagementFragment extends Fragment {
                 }
             } else {
                 ticketCount--;
+                CartManager.setTicketCount(ticketCount);
                 ticketCountText.setText(String.valueOf(ticketCount));
                 removeLastAttendeeBlock();
                 updatePrices();
             }
         });
 
-        // show price values
-        updatePrices();
-
-        // when buy now is clicked move to payment if validation passes
+        // when buy now button is clicked
         Button nextButton = view.findViewById(R.id.descriptionsButtonKhushi2);
         nextButton.setOnClickListener(v -> {
             if (validateAllAttendees()) {
+                // go to the payment screen if all inputs are valid
                 PaymentFragment paymentFragment = new PaymentFragment();
                 getParentFragmentManager().beginTransaction()
                         .replace(R.id.fragment_container, paymentFragment)
@@ -110,21 +114,32 @@ public class TicketManagementFragment extends Fragment {
             }
         });
 
+        // show price values based on current ticket count
+        updatePrices();
         return view;
     }
 
-    // this adds one attendee block with name, email and phone input
+    // adds attendee input blocks based on saved ticket count
+    private void restoreAttendees() {
+        ticketCountText.setText(String.valueOf(ticketCount));
+        attendeeContainer.removeAllViews(); // clear if reloaded
+        for (int i = 0; i < ticketCount; i++) {
+            addAttendeeBlock();
+        }
+    }
+
+    // adds a new attendee block with phone and email fields
     private void addAttendeeBlock() {
         LayoutInflater inflater = LayoutInflater.from(getContext());
         View attendeeView = inflater.inflate(R.layout.attendees, attendeeContainer, false);
 
         TextView attendeeLabel = attendeeView.findViewById(R.id.textAttendees);
-        attendeeLabel.setText("Attendee " + ticketCount);
+        attendeeLabel.setText("Attendee " + (attendeeContainer.getChildCount() + 1));
 
         EditText phoneField = attendeeView.findViewById(R.id.editPhoneKhushi);
         EditText emailField = attendeeView.findViewById(R.id.editEmailKhushi);
 
-        // phone field accepts only numbers and max 10 digits
+        // make sure phone only accepts digits and max 10 digits
         phoneField.setInputType(android.text.InputType.TYPE_CLASS_NUMBER);
         phoneField.setFilters(new InputFilter[]{
                 new InputFilter.LengthFilter(10),
@@ -141,7 +156,7 @@ public class TicketManagementFragment extends Fragment {
         attendeeContainer.addView(attendeeView);
     }
 
-    // this checks if name, email, phone are valid for each attendee
+    // checks if all fields (name, email, phone) are valid
     private boolean validateAllAttendees() {
         for (int i = 0; i < attendeeContainer.getChildCount(); i++) {
             View attendeeView = attendeeContainer.getChildAt(i);
@@ -154,19 +169,19 @@ public class TicketManagementFragment extends Fragment {
             String emailText = email.getText().toString().trim();
             String phoneText = phone.getText().toString().trim();
 
-            // if name is empty show toast and stop
+            // check if name is empty
             if (nameText.isEmpty()) {
                 Toast.makeText(requireContext(), "Please enter a valid name", Toast.LENGTH_SHORT).show();
                 return false;
             }
 
-            // if email is not valid show toast and stop
+            // check if email is valid
             if (!Patterns.EMAIL_ADDRESS.matcher(emailText).matches()) {
                 Toast.makeText(requireContext(), "Please enter a valid email", Toast.LENGTH_SHORT).show();
                 return false;
             }
 
-            // if phone is not 10 digits show toast and stop
+            // check if phone has exactly 10 digits
             if (phoneText.length() != 10) {
                 Toast.makeText(requireContext(), "Phone must have 10 digits", Toast.LENGTH_SHORT).show();
                 return false;
@@ -175,14 +190,14 @@ public class TicketManagementFragment extends Fragment {
         return true;
     }
 
-    // this removes the last attendee input block
+    // removes the last added attendee block
     private void removeLastAttendeeBlock() {
         if (attendeeContainer.getChildCount() > 0) {
             attendeeContainer.removeViewAt(attendeeContainer.getChildCount() - 1);
         }
     }
 
-    // this calculates subtotal, tax and total
+    // calculates subtotal, tax and total price
     private void updatePrices() {
         double subtotal = ticketPrice * ticketCount;
         double tax = subtotal * 0.12;

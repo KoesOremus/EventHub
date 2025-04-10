@@ -48,13 +48,13 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(this);
 
-        // observe ViewModel
+        // observe shared viewmodel to get location passed from other fragments
         SharedLocationViewModel viewModel = new ViewModelProvider(requireActivity()).get(SharedLocationViewModel.class);
         viewModel.getLocation().observe(getViewLifecycleOwner(), location -> {
             if (location != null && !location.isEmpty()) {
                 autoSearchLocation = location;
                 if (isMapReady) {
-                    searchView.setQuery(location, true);
+                    searchView.setQuery(location, true); // triggers search
                 }
             }
         });
@@ -62,15 +62,16 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         return view;
     }
 
-
     @Override
     public void onMapReady(@NonNull GoogleMap map) {
         googleMap = map;
         isMapReady = true;
 
+        // initialize map and set hybrid view
         MapsInitializer.initialize(requireContext());
+        googleMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
 
-        // expand and prevent keyboard popup
+        // expand search view and hide keyboard
         searchView.setIconified(false);
         searchView.clearFocus();
 
@@ -79,11 +80,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             imm.hideSoftInputFromWindow(searchView.getWindowToken(), 0);
         }
 
-        // manual search input
+        // handle manual search input
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                locateAndMark(query);
+                locateAndMark(query.trim());
                 searchView.clearFocus();
                 return true;
             }
@@ -94,17 +95,17 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             }
         });
 
-        // auto-search from event if location passed
+        // if location was passed from another screen, trigger it
         if (autoSearchLocation != null && !autoSearchLocation.isEmpty()) {
             mapView.postDelayed(() -> {
                 if (isMapReady) {
-                    searchView.setQuery(autoSearchLocation, true); // true = triggers search
+                    searchView.setQuery(autoSearchLocation, true); // triggers search
                 }
-            }, 600);
+            }, 600); // delay to ensure map is ready
         }
     }
 
-    // helper to find location and drop pin
+    // find location by name and place a marker
     private void locateAndMark(String locationName) {
         Geocoder geocoder = new Geocoder(getContext(), Locale.getDefault());
         try {
@@ -112,16 +113,23 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             if (addresses != null && !addresses.isEmpty()) {
                 Address address = addresses.get(0);
                 LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
+
+                // clear previous markers and add new one
                 googleMap.clear();
                 googleMap.addMarker(new MarkerOptions().position(latLng).title(locationName));
+
+                // animate camera to location
                 googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
+            } else {
+                // optional: toast for no results
+                // Toast.makeText(getContext(), "no location found", Toast.LENGTH_SHORT).show();
             }
         } catch (IOException e) {
-            Log.e("MapFragment", "Geocoding failed: " + e.getMessage());
+            Log.e("MapFragment", "geocoding failed: " + e.getMessage());
         }
     }
 
-    // lifecycle for map
+    // handle map lifecycle
     @Override public void onResume() { super.onResume(); if (mapView != null) mapView.onResume(); }
     @Override public void onPause() { super.onPause(); if (mapView != null) mapView.onPause(); }
     @Override public void onDestroy() { super.onDestroy(); if (mapView != null) mapView.onDestroy(); }
