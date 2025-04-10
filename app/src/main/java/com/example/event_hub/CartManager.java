@@ -4,71 +4,93 @@ import android.os.Bundle;
 
 public class CartManager {
 
-    // checks if cart has anything or not
+    // keeps track of whether the cart is empty
     private static boolean isCartEmpty = true;
+
+    // total price of items in the cart
     private static double totalAmount;
+
+    // number of tickets
     private static int number;
 
-    // stores the selected event
+    // the selected event for checkout
     private static Event selectedEvent;
 
-    // stores the index of the event in the swipe list
+    // index of the selected event (used for swiping or going back)
     private static int selectedEventIndex = -1;
 
-    // used in nav bar to decide whether to show toast or not
+    // ticket count saved for persistence
+    private static int ticketCount = 1;
+
+    // checks if cart is empty
     public static boolean isCartEmpty() {
         return isCartEmpty;
     }
 
-    // saves selected event when checkout happens
+    // saves the selected event when user checks out
     public static void setSelectedEvent(Event event) {
         selectedEvent = event;
     }
 
-    // used to get the event from anywhere
+    // returns the event stored in the cart
     public static Event getSelectedEvent() {
         return selectedEvent;
     }
 
-    // manually updates cart state
+    // updates cart status manually (true or false)
     public static void setCartEmpty(boolean empty) {
         isCartEmpty = empty;
     }
 
-    // resets all cart values
+    // clears everything in the cart
     public static void clear() {
         selectedEvent = null;
         selectedEventIndex = -1;
         isCartEmpty = true;
+        ticketCount = 1;
     }
 
-    // saves the index of the event when swiped
+    // saves the index of event when swiped
     public static void setSelectedEventIndex(int index) {
         selectedEventIndex = index;
     }
 
-    // used to go back to the same index when needed
+    // gets the index of swiped event
     public static int getSelectedEventIndex() {
         return selectedEventIndex;
     }
 
+    // saves the total price
     public static void setTotal(double total) {
         totalAmount = total;
     }
 
+    // returns the saved total price
     public static double getTotal() {
         return totalAmount;
     }
 
+    // saves number of tickets (can be used in payment)
     public static void setNumber(int totalNumber) {
         number = totalNumber;
     }
 
+    // gets the saved number of tickets
     public static int getNumber() {
         return number;
     }
 
-    // makes a bundle with all event info (to pass across screens)
+    // sets the current ticket count so we can restore it later
+    public static void setTicketCount(int count) {
+        ticketCount = count;
+    }
+
+    // gets the saved ticket count for restoring attendee blocks
+    public static int getTicketCount() {
+        return ticketCount;
+    }
+
+    // builds a bundle with all event data to pass between screens
     public static Bundle buildBundleFromEvent() {
         Bundle bundle = new Bundle();
         if (selectedEvent != null) {
