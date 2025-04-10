@@ -69,7 +69,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
         // initialize map and set hybrid view
         MapsInitializer.initialize(requireContext());
-        googleMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
 
         // expand search view and hide keyboard
         searchView.setIconified(false);
